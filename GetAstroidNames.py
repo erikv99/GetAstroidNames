@@ -1,6 +1,5 @@
 from sys import argv
 from bs4 import BeautifulSoup
-import requests
 
 def getSoupObject(url):
     """Will return the soup object for our url"""
@@ -45,37 +44,22 @@ def scrapeAstroidNames(amountOfNamesNeeded):
 
     astroidNames = []
     url = "https://space.fandom.com/wiki/List_of_named_asteroids_(A-E)"
-    soup = getSoupObject(url)
+    soup = getSoupObject(firstPageURL)
 
     # Finding 200 astroid names
-    items = soup.find_all("a", {"rel":"nofollow"}, limit=amountOfNamesNeeded)
+    items = soup.find_all("a", {"rel":"nofollow"}, limit=200)
 
     # Looping thru item and getting the text
     for item in items:
 
         astroidName = item.text
         
-        # if the astroid name contains \t (some not wanted elements have this)
-        if (astroidName.count("\t")):
-            continue
-
         # if the name contains page does not exist
         if (astroidName.count("(page does not exist)") > 0):
+
             astroidName = astroidName.replace("(page does not exist)", "")
 
         # adding the astroid name to the array
         astroidNames.append(astroidName)
 
     return astroidNames
-
-#if (len(argv) < 2):
-if (1 > 2): 
-
-    print("Missing arguments")
-
-else:
-
-    # Getting the scraped data (list)
-    scrapedData = scrapeAstroidNames(300)
-    print(scrapedData)
-
